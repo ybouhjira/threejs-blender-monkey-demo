@@ -3,11 +3,13 @@ import {
   AmbientLight,
   DirectionalLight,
   Mesh,
+  MeshPhysicalMaterial,
   MeshStandardMaterial,
   PerspectiveCamera,
   PlaneGeometry,
   PointLight,
   Scene,
+  Vector2,
   WebGLRenderer,
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
@@ -17,6 +19,9 @@ import CrossMesh from "./shapes/cross";
 import { getMonkeyModel } from "./getMonkeyModel";
 
 import * as TWEEN from "@tweenjs/tween.js";
+import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
+import { FontLoader } from "three/examples/jsm/loaders/FontLoader";
+import { vec3 } from "three/examples/jsm/nodes/shadernode/ShaderNodeBaseElements";
 
 const scene = new Scene();
 const renderer = new WebGLRenderer({
@@ -81,6 +86,54 @@ async function addThingsToTheScene() {
   stripe1_0.position.x = -3.3;
   stripes[1].add(stripe1_0);
   scene.add(...stripes);
+
+  const loader = new FontLoader();
+
+  loader.load(
+    "https://threejs.org/examples/fonts/optimer_bold.typeface.json",
+    (font) => {
+      "Hello".split("").forEach((letter, i) => {
+        const mesh = new Mesh(
+          new TextGeometry(letter, {
+            font,
+            size: 2,
+            height: 0.1,
+            curveSegments: 10,
+            bevelEnabled: false,
+          }),
+          new MeshPhysicalMaterial({
+            color: 0xaaaaaa,
+            roughness: 1,
+            metalness: 0,
+            reflectivity: 1,
+            clearcoat: 1,
+            clearcoatRoughness: 0,
+            flatShading: false,
+            emissive: "black",
+          })
+        );
+
+        mesh.position.y = Math.random() * 3 - 3;
+        new TWEEN.Tween(mesh!.position)
+          .to({ y: 0.3 + Math.random() * 0.5 }, 2000)
+          .easing(TWEEN.Easing.Quadratic.InOut)
+          .yoyo(true)
+          .repeat(Infinity)
+          .start();
+
+        mesh.name = `letter-${i}`;
+        scene.add(mesh);
+
+        mesh.position.x = -3.3 + i * 1.5;
+        mesh.position.z = 0.4;
+        mesh.rotation.set(
+          (Math.random() * Math.PI) / 10 - Math.random() / 20,
+          (Math.random() * Math.PI) / 10 - Math.random() / 20,
+          (Math.random() * Math.PI) / 10 - Math.random() / 20
+        );
+      });
+    }
+  );
 }
 
 addThingsToTheScene();
