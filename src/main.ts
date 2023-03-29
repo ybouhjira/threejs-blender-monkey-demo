@@ -42,19 +42,25 @@ scene.add(pointLight);
 const directionalLight = new DirectionalLight(0xffffff, 1);
 directionalLight.position.set(0, 0, 6);
 directionalLight.target.position.set(0, 0, 0);
+const crosses: Promise<Group[]> = Promise.all(CrossMesh.getBottomCrosses());
 
-scene.add(...createCircles());
-scene.add(new AmbientLight(0xffffff, 0.5));
-scene.add(directionalLight);
-scene.add(new AxesHelper(1000));
-scene.add(await getMonkeyModel());
-const crosses: Group[] = await Promise.all(CrossMesh.getBottomCrosses());
-scene.add(...crosses);
+async function addThingsToTheScene() {
+  scene.add(...createCircles());
+  scene.add(new AmbientLight(0xffffff, 0.5));
+  scene.add(directionalLight);
+  scene.add(new AxesHelper(1000));
+  scene.add(await getMonkeyModel());
 
-function animate() {
+  scene.add(...(await crosses));
+  return crosses;
+}
+
+addThingsToTheScene();
+
+async function animate() {
   requestAnimationFrame(animate);
 
-  crosses.forEach((cross) => {
+  (await crosses).forEach((cross) => {
     cross.rotation.y += 0.01;
 
     cross.traverse((obj) => {
