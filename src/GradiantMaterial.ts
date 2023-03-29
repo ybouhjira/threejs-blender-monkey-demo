@@ -1,9 +1,10 @@
-import {ShaderMaterial} from "three";
+import { ShaderMaterial } from "three";
+import { step } from "three/examples/jsm/nodes/shadernode/ShaderNodeBaseElements";
 
 export class GradiantMaterial extends ShaderMaterial {
-    constructor(hueValue: number = 1, valueValue: number = 1) {
-        super({
-            fragmentShader: `
+  constructor(hueValue: number = 1, valueValue: number = 1) {
+    super({
+      fragmentShader: `
                 varying vec2 vUv;
                 uniform float uTime;
                 uniform float uHue;
@@ -28,7 +29,7 @@ export class GradiantMaterial extends ShaderMaterial {
                     );
                 }
             `,
-            vertexShader: ` 
+      vertexShader: ` 
                 varying vec2 vUv;
                 varying float uTime;
                 
@@ -37,11 +38,15 @@ export class GradiantMaterial extends ShaderMaterial {
                     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
                 }
             `,
-            uniforms: {
-                uTime: {value: 0},
-                uHue: {value: hueValue},
-                uValue: {value: valueValue},
-            }
-        })
-    }
+      uniforms: {
+        uTime: { value: 0 },
+        uHue: { value: hueValue },
+        uValue: { value: valueValue },
+      },
+    });
+  }
+
+  animate(step: number = 0.001) {
+    this.uniforms.uTime.value += step;
+  }
 }

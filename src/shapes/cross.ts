@@ -33,6 +33,12 @@ export default class CrossMesh {
     });
   }
 
+  animate() {
+    this.promise.then((cross) => {
+      cross.traverse((obj) => {});
+    });
+  }
+
   model(): Promise<Group> {
     return this.promise;
   }

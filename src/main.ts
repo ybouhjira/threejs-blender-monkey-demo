@@ -13,10 +13,8 @@ import {
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { createCircles } from "./createCircles";
 import { GradiantMaterial } from "./GradiantMaterial";
-import { ParametricGeometries } from "three/examples/jsm/geometries/ParametricGeometries";
 import CrossMesh from "./shapes/cross";
 import { getMonkeyModel } from "./getMonkeyModel";
-import PlaneGeometry = ParametricGeometries.PlaneGeometry;
 
 const scene = new Scene();
 const renderer = new WebGLRenderer({
@@ -65,20 +63,19 @@ async function animate() {
 
     cross.traverse((obj) => {
       if ((obj as Mesh).isMesh)
-        (
-          obj as Mesh<PlaneGeometry, GradiantMaterial>
-        ).material!.uniforms.uTime.value += 0.001;
+        (obj as Mesh<any, GradiantMaterial>).material!.animate();
     });
   });
 
   (scene.getObjectByName("circle1") as Mesh<
-    PlaneGeometry,
+    any,
     GradiantMaterial
-  >)!.material!.uniforms.uTime.value += 0.001;
+  >)!.material!.animate();
+
   (scene.getObjectByName("plane") as Mesh<
-    PlaneGeometry,
+    any,
     GradiantMaterial
-  >)!.material!.uniforms.uTime.value += 0.001;
+  >)!.material!.animate();
   renderer.render(scene, camera);
 }
 
