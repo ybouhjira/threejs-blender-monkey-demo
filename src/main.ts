@@ -3,7 +3,6 @@ import {
   AmbientLight,
   AxesHelper,
   DirectionalLight,
-  Group,
   Mesh,
   PerspectiveCamera,
   PointLight,
@@ -15,6 +14,8 @@ import { createCircles } from "./createCircles";
 import { GradiantMaterial } from "./GradiantMaterial";
 import CrossMesh from "./shapes/cross";
 import { getMonkeyModel } from "./getMonkeyModel";
+
+import * as TWEEN from "@tweenjs/tween.js";
 
 const scene = new Scene();
 const renderer = new WebGLRenderer({
@@ -40,7 +41,8 @@ scene.add(pointLight);
 const directionalLight = new DirectionalLight(0xffffff, 1);
 directionalLight.position.set(0, 0, 6);
 directionalLight.target.position.set(0, 0, 0);
-const crosses: Promise<Group[]> = Promise.all(CrossMesh.getBottomCrosses());
+const crosses: CrossMesh[] = CrossMesh.getBottomCrosses();
+const crossModels = Promise.all(crosses.map((c) => c.model()));
 
 async function addThingsToTheScene() {
   scene.add(...createCircles());
@@ -49,7 +51,10 @@ async function addThingsToTheScene() {
   scene.add(new AxesHelper(1000));
   scene.add(await getMonkeyModel());
 
-  scene.add(...(await crosses));
+  scene.add(...(await crossModels));
+
+  // crosses.forEach((c) => c.animate());
+
   return crosses;
 }
 
@@ -58,8 +63,8 @@ addThingsToTheScene();
 async function animate() {
   requestAnimationFrame(animate);
 
-  (await crosses).forEach((cross) => {
-    cross.rotation.y += 0.01;
+  (await crossModels).forEach((cross) => {
+    //cross.rotation.y += 0.01;
 
     cross.traverse((obj) => {
       if ((obj as Mesh).isMesh)
@@ -76,6 +81,8 @@ async function animate() {
     any,
     GradiantMaterial
   >)!.material!.animate();
+
+  TWEEN.update();
   renderer.render(scene, camera);
 }
 

@@ -1,5 +1,4 @@
 import { ShaderMaterial } from "three";
-import { step } from "three/examples/jsm/nodes/shadernode/ShaderNodeBaseElements";
 
 export class GradiantMaterial extends ShaderMaterial {
   constructor(hueValue: number = 1, valueValue: number = 1) {
