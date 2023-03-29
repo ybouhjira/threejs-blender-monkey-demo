@@ -1,10 +1,11 @@
 import "./style.css";
 import {
   AmbientLight,
-  AxesHelper,
   DirectionalLight,
   Mesh,
+  MeshStandardMaterial,
   PerspectiveCamera,
+  PlaneGeometry,
   PointLight,
   Scene,
   WebGLRenderer,
@@ -48,14 +49,38 @@ async function addThingsToTheScene() {
   scene.add(...createCircles());
   scene.add(new AmbientLight(0xffffff, 0.5));
   scene.add(directionalLight);
-  scene.add(new AxesHelper(1000));
   scene.add(await getMonkeyModel());
 
   scene.add(...(await crossModels));
 
-  // crosses.forEach((c) => c.animate());
+  // stripes
+  const width = 0.1;
+  const whiteStandardMaterial = new MeshStandardMaterial({
+    color: "white",
+  });
+  const stripes = [
+    new Mesh(new PlaneGeometry(10, width, 1, 1), whiteStandardMaterial),
+    new Mesh(new PlaneGeometry(6, width, 1, 1), whiteStandardMaterial),
+    new Mesh(new PlaneGeometry(1, width, 1, 1), whiteStandardMaterial),
+    new Mesh(new PlaneGeometry(5, width, 1, 1), whiteStandardMaterial),
+  ];
 
-  return crosses;
+  stripes[0].rotation.z = Math.PI / 4.5;
+  stripes[1].rotation.z = Math.PI / 4.5;
+  stripes[2].rotation.z = Math.PI / 4.5;
+  stripes[3].rotation.z = Math.PI / 4.5;
+
+  stripes[1].position.y += 1;
+  stripes[2].position.y += 2;
+  stripes[3].position.y -= 1;
+
+  const stripe1_0 = new Mesh(
+    new PlaneGeometry(0.3, width, 1, 1),
+    whiteStandardMaterial
+  );
+  stripe1_0.position.x = -3.3;
+  stripes[1].add(stripe1_0);
+  scene.add(...stripes);
 }
 
 addThingsToTheScene();
@@ -64,8 +89,6 @@ async function animate() {
   requestAnimationFrame(animate);
 
   (await crossModels).forEach((cross) => {
-    //cross.rotation.y += 0.01;
-
     cross.traverse((obj) => {
       if ((obj as Mesh).isMesh)
         (obj as Mesh<any, GradiantMaterial>).material!.animate();

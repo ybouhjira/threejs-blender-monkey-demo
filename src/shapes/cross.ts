@@ -41,13 +41,13 @@ export default class CrossMesh {
 
   public static getBottomCrosses(): CrossMesh[] {
     const crossMeshes = [
-      new CrossMesh(-3, -3, 0),
-      new CrossMesh(-2, -3, 0),
-      new CrossMesh(-1, -3, 0),
+      new CrossMesh(-3, -3, 0.0001),
+      new CrossMesh(-2, -3, 0.0001),
+      new CrossMesh(-1, -3, 0.0001),
 
-      new CrossMesh(1, 3, 0),
-      new CrossMesh(2, 3, 0),
-      new CrossMesh(3, 3, 0),
+      new CrossMesh(1, 3, 0.0001),
+      new CrossMesh(2, 3, 0.0001),
+      new CrossMesh(3, 3, 0.0001),
     ];
 
     Promise.all(crossMeshes.map((cross) => cross.model())).then((crosses) => {
