@@ -1,23 +1,11 @@
-import { Group, Mesh, MeshPhysicalMaterial, Shape, ShapeGeometry } from "three";
+import { Group, Mesh } from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { GradiantMaterial } from "../GradiantMaterial";
 
-export default class CrossMesh extends Mesh<
-  ShapeGeometry,
-  MeshPhysicalMaterial
-> {
+export default class CrossMesh {
   private readonly promise: Promise<Group>;
 
   constructor(x: number, y: number, z: number) {
-    const shape = new Shape();
-
-    super(
-      new ShapeGeometry(shape),
-      new MeshPhysicalMaterial({
-        color: 0xffffff,
-      })
-    );
-
     const loader = new GLTFLoader();
 
     this.promise = new Promise((resolve, reject) => {
@@ -43,15 +31,13 @@ export default class CrossMesh extends Mesh<
         }
       );
     });
-
-    this.position.set(x, y, z);
   }
 
   model(): Promise<Group> {
     return this.promise;
   }
 
-  public static getBottomCrosses() {
+  public static getBottomCrosses(): Promise<Group>[] {
     return [
       new CrossMesh(-1, -3, 0).model(),
       new CrossMesh(-2, -3, 0).model(),
